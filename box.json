@@ -1,0 +1,38 @@
+{
+    "name":"cbguard",
+    "version":"0.0.0",
+    "author":"",
+    "location":"coldbox-modules/cbguard#v0.0.0",
+    "homepage":"https://github.com/coldbox-modules/cbguard",
+    "documentation":"https://github.com/coldbox-modules/cbguard",
+    "repository":{
+        "type":"git",
+        "URL":"https://github.com/coldbox-modules/cbguard"
+    },
+    "bugs":"https://github.com/coldbox-modules/cbguard/issues",
+    "slug":"cbguard",
+    "shortDescription":"Annotation drive authentication and authorization for ColdBox applications",
+    "description":"Annotation drive authentication and authorization for ColdBox applications",
+    "type":"modules",
+    "dependencies":{
+        
+    },
+    "devDependencies":{
+        "coldbox":"^4.3.0+188",
+        "testbox":"^2.4.0+80"
+    },
+    "installPaths":{
+        "testbox":"testbox",
+        "coldbox":"tests/resources/app/coldbox"
+    },
+    "scripts":{
+        "postVersion":"package set location='coldbox-modules/cbguard#v`package version`'",
+        "onRelease":"publish",
+        "postPublish":"!git push && !git push --tags"
+    },
+    "ignore":[
+        "**/.*",
+        "test",
+        "tests"
+    ]
+}
