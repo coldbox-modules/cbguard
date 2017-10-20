@@ -14,13 +14,13 @@ Here's an example of how to lock down an entire handler:
 ```cfc
 component secured {
 
-	function index( event, rc, prc ) {
-		// ...
-	}
+    function index( event, rc, prc ) {
+        // ...
+    }
 
-	function show( event, rc, prc ) {
-		// ...
-	}
+    function show( event, rc, prc ) {
+        // ...
+    }
 
 }
 ```
@@ -30,9 +30,9 @@ You can be more specific and lock down only specific actions using the same anno
 ```cfc
 component {
 
-	function create( event, rc, prc ) secured {
-		// ...
-	}
+    function create( event, rc, prc ) secured {
+        // ...
+    }
 
 }
 ```
@@ -42,13 +42,13 @@ You can further lock down handlers and actions to a list of specific permissions
 ```cfc
 component secured="admin" {
 	
-	function index( event, rc, prc ) {
-		// ...
-	}
+    function index( event, rc, prc ) {
+        // ...
+    }
 
-	function show( event, rc, prc ) {
-		// ...
-	}
+    function show( event, rc, prc ) {
+        // ...
+    }
 
 }
 ```
@@ -58,9 +58,9 @@ In the above component, the user must have the `admin` permission to access the 
 ```cfc
 component {
 	
-	function show( event, rc, prc ) secured="admin,reviews_posts" {
-		// ...
-	}
+    function show( event, rc, prc ) secured="admin,reviews_posts" {
+        // ...
+    }
 
 }
 ```
@@ -72,13 +72,13 @@ These two approaches can be combined and both handler and actions can be secured
 ```cfc
 component secured {
 
-	function index( event, rc, prc ) {
-		// ...
-	}
+    function index( event, rc, prc ) {
+        // ...
+    }
 
-	function new( event, rc, prc ) secured="create_posts" {
-		// ...
-	}
+    function new( event, rc, prc ) secured="create_posts" {
+        // ...
+    }
 
 }
 ```
@@ -152,9 +152,9 @@ To configure the AuthenticationService, set the value of `authenticationService`
 
 ```
 moduleSettings = {
-	cbguard = {
-		authenticationService = "SecurityService@myapp"
-	}
+    cbguard = {
+        authenticationService = "SecurityService@myapp"
+    }
 };
 ```
 
@@ -167,12 +167,12 @@ You can change the method names called on the `AuthenticationService` and the re
 
 ```cfc
 moduleSettings = {
-	cbguard = {
-		moduleNames = {
-			isLoggedIn    = "getIsLoggedIn",
-			getUser       = "retrieveUser",
-			hasPermission = "checkPermission"
-		}
-	}
+    cbguard = {
+        methodNames = {
+            isLoggedIn    = "getIsLoggedIn",
+            getUser       = "retrieveUser",
+            hasPermission = "checkPermission"
+        }
+    }
 };
 ```
