@@ -46,8 +46,10 @@
 		};
 
 		// custom settings
-		settings = {
-
+		moduleSettings = {
+			cbguard = {
+				authenticationService = "authenticationService"
+			}
 		};
 
 		// environment settings, create a detectEnvironment() method to detect it yourself.
