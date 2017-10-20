@@ -1,6 +1,6 @@
 component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
 
-    property name="authenticationService" inject="id";
+    property name="authenticationService" inject="AuthenticationService";
 
     function beforeAll() {
         super.beforeAll();

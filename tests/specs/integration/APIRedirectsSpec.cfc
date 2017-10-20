@@ -1,6 +1,6 @@
 component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
 
-    property name="authenticationService" inject="id";
+    property name="authenticationService" inject="AuthenticationService";
     property name="interceptorService" inject="coldbox:interceptorService";
 
     function beforeAll() {
