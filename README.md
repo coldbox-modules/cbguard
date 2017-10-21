@@ -65,7 +65,7 @@ component {
 }
 ```
 
-Individual actions can be secured in the same way.  Above, the `show` action requires the logged in user yo have either the `admin` or the `reviews_posts` permission.
+Individual actions can be secured in the same way.  Above, the `show` action requires the logged in user to have either the `admin` or the `reviews_posts` permission.
 
 These two approaches can be combined and both handler and actions can be secured together:
 
