@@ -94,15 +94,15 @@ When a user is denied access to a action, an event of your choosing is executed 
 
 This is the event that is executed when the user is not logged in and is attempting to execute a secured action, whether or not that handler or action has permissions.
 
-1. `authorizationOverrideEvent` (Default: same as `authenticationOverrideEvent`)
-
-This is the event that is executed when the user is not logged in and is attempting to execute a secured action via ajax (`event.isAjax()`), whether or not that handler or action has permissions.  By default, this will execute the same action that is configured for `authenticationOverrideEvent`.
-
-1. `authenticationAjaxOverrideEvent` (Default: `Main.onAuthenticationFailure`)
+1. `authorizationOverrideEvent` (Default: same as `Main.authenticationOverrideEvent`)
 
 This is the event that is executed when the user is logged in and is attempting to execute a secured action but does not have the requisite permissions.
 
 1. `authenticationAjaxOverrideEvent` (Default: `Main.onAuthenticationFailure`)
+
+This is the event that is executed when the user is not logged in and is attempting to execute a secured action via ajax (`event.isAjax()`), whether or not that handler or action has permissions.  By default, this will execute the same action that is configured for `authenticationOverrideEvent`.
+
+1. `authorizationAjaxOverrideEvent` (Default: `Main.onAuthenticationFailure`)
 
 This is the event that is executed when the user is logged in and is attempting to execute a secured action via ajax (`event.isAjax()`) but does not have the requisite permissions. By default, this will execute the same action that is configured for `authorizationOverrideEvent`.
 
