@@ -1,4 +1,4 @@
-component {
+component extends="coldbox.system.interceptor"{
 
     property name="handlerService" inject="coldbox:handlerService";
 
@@ -20,7 +20,7 @@ component {
         }
 
         var handler = handlerService.getHandler(
-            handlerService.getRegisteredHandler( event.getCurrentEvent() ),
+            handlerService.getHandlerBean( event.getCurrentEvent() ),
             event
         );
 
