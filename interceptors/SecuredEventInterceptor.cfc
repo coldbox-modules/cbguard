@@ -19,8 +19,13 @@ component extends="coldbox.system.interceptor"{
             variables.authenticationService = wirebox.getInstance( getProperty( "AuthenticationService" ) );
         }
 
+        if( structKeyExists( handlerService, "getHandlerBean" ) ){
+            var handlerBean = handlerService.getHandlerBean( event.getCurrentEvent() );
+        } else {
+            var handlerBean = handlerService.getRegisteredHandler( event.getCurrentEvent() );
+        }
         var handler = handlerService.getHandler(
-            handlerService.getHandlerBean( event.getCurrentEvent() ),
+            handlerBean,
             event
         );
 
