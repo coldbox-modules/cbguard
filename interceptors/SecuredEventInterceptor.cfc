@@ -1,4 +1,4 @@
-component extends="coldbox.system.interceptor"{
+component extends="coldbox.system.Interceptor"{
 
     property name="handlerService" inject="coldbox:handlerService";
     property name="coldboxVersion" inject="coldbox:fwSetting:version";
