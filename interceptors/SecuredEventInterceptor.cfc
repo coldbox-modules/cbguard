@@ -1,7 +1,7 @@
 component extends="coldbox.system.interceptor"{
 
-	property name="handlerService" inject="coldbox:handlerService";
-	property name="coldboxVersion" inject="coldbox:fwSetting:version";
+    property name="handlerService" inject="coldbox:handlerService";
+    property name="coldboxVersion" inject="coldbox:fwSetting:version";
 
     void function configure() {}
 
@@ -17,7 +17,7 @@ component extends="coldbox.system.interceptor"{
     */
     function preProcess( event, rc, prc, interceptData, buffer ) {
 
-		if ( isNull( variables.authenticationService ) ) {
+	if ( isNull( variables.authenticationService ) ) {
             variables.authenticationService = wirebox.getInstance( getProperty( "AuthenticationService" ) );
         }
 
