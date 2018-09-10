@@ -1,6 +1,7 @@
-component {
+component extends="coldbox.system.Interceptor"{
 
     property name="handlerService" inject="coldbox:handlerService";
+    property name="coldboxVersion" inject="coldbox:fwSetting:version";
 
     void function configure() {}
 
@@ -15,12 +16,18 @@ component {
     * the event is overridden to the event specified in module settings.
     */
     function preProcess( event, rc, prc, interceptData, buffer ) {
-        if ( isNull( variables.authenticationService ) ) {
+
+	if ( isNull( variables.authenticationService ) ) {
             variables.authenticationService = wirebox.getInstance( getProperty( "AuthenticationService" ) );
         }
 
+        if( listFirst( coldboxVersion, "." ) >= 5 ){
+            var handlerBean = handlerService.getHandlerBean( event.getCurrentEvent() );
+        } else {
+            var handlerBean = handlerService.getRegisteredHandler( event.getCurrentEvent() );
+        }
         var handler = handlerService.getHandler(
-            handlerService.getRegisteredHandler( event.getCurrentEvent() ),
+            handlerBean,
             event
         );
 
