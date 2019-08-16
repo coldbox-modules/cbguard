@@ -37,6 +37,7 @@ component {
 
     function onLoad() {
         controller.getInterceptorService().registerInterceptor(
+            interceptorName = "SecuredEventInterceptor",
             interceptorClass = "#moduleMapping#.interceptors.SecuredEventInterceptor",
             interceptorProperties = settings
         );

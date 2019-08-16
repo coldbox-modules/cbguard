@@ -4,7 +4,6 @@
 
 ## Annotation driven guards for authentication and authorization in ColdBox
 
-
 ### Usage
 
 `cbguard` lets us lock down methods to logged in users and users with specific permissions using one annotation — `secured`.  Just sticking the secured annotation on a handler or action is enough to require a user to log in before executing those events.
@@ -41,7 +40,7 @@ You can further lock down handlers and actions to a list of specific permissions
 
 ```cfc
 component secured="admin" {
-	
+
     function index( event, rc, prc ) {
         // ...
     }
@@ -57,7 +56,7 @@ In the above component, the user must have the `admin` permission to access the 
 
 ```cfc
 component {
-	
+
     function show( event, rc, prc ) secured="admin,reviews_posts" {
         // ...
     }
@@ -176,3 +175,23 @@ moduleSettings = {
     }
 };
 ```
+
+Additionally, you can modify the override action for each of the event types:
+
+```cfc
+moduleSettings = {
+    cbguard = {
+        overrideActions = {
+            authenticationOverrideEvent = "relocate",
+            authenticationAjaxOverrideEvent = "override",
+            authorizationOverrideEvent = "relocate",
+            authorizationAjaxOverrideEvent = "override"
+        }
+    }
+};
+```
+
+`relocate` refers to calling `relocate` on the controller. The user will be redirected to the new page.
+`override` refers to `event.overrideEvent`. This will not redirect but simply change the running event.
+
+`

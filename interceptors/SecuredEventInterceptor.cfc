@@ -16,8 +16,7 @@ component extends="coldbox.system.Interceptor"{
     * the event is overridden to the event specified in module settings.
     */
     function preProcess( event, rc, prc, interceptData, buffer ) {
-
-	if ( isNull( variables.authenticationService ) ) {
+        if ( isNull( variables.authenticationService ) ) {
             variables.authenticationService = wirebox.getInstance( getProperty( "AuthenticationService" ) );
         }
 
@@ -56,11 +55,22 @@ component extends="coldbox.system.Interceptor"{
         }
 
         if ( ! invoke( authenticationService, getProperty( "methodNames" )[ "isLoggedIn" ] ) ) {
-            event.overrideEvent(
-                event.isAjax() ?
-                    getProperty( "authenticationAjaxOverrideEvent", getProperty( "authenticationOverrideEvent", "" ) ) :
-                    getProperty( "authenticationOverrideEvent", "" )
-            );
+            var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
+            var relocateEvent = getProperty( eventType );
+            var overrideAction = getProperty( "overrideActions" )[ eventType ];
+            switch ( overrideAction ) {
+                case "relocate":
+                    relocate( relocateEvent );
+                    break;
+                case "override":
+                    event.overrideEvent( relocateEvent );
+                    break;
+                default:
+                    throw(
+                        type = "InvalidOverideActionType",
+                        message = "The type [#overrideAction#] is not a valid override action.  Valid types are ['relocate', 'override']."
+                    );
+            }
             return true;
         }
 
@@ -81,11 +91,22 @@ component extends="coldbox.system.Interceptor"{
             }
         }
 
-        event.overrideEvent(
-            event.isAjax() ?
-                getProperty( "authorizationAjaxOverrideEvent", getProperty( "authorizationOverrideEvent", "" ) ) :
-                getProperty( "authorizationOverrideEvent", "" )
-        );
+        var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
+        var relocateEvent = getProperty( eventType );
+        var overrideAction = getProperty( "overrideActions" )[ eventType ];
+        switch ( overrideAction ) {
+            case "relocate":
+                relocate( relocateEvent );
+                break;
+            case "override":
+                event.overrideEvent( relocateEvent );
+                break;
+            default:
+                throw(
+                    type = "InvalidOverideActionType",
+                    message = "The type [#overrideAction#] is not a valid override action.  Valid types are ['relocate', 'override']."
+                );
+        }
         return true;
     }
 
@@ -117,11 +138,22 @@ component extends="coldbox.system.Interceptor"{
         }
 
         if ( ! invoke( authenticationService, getProperty( "methodNames" )[ "isLoggedIn" ] ) ) {
-            event.overrideEvent(
-                event.isAjax() ?
-                    getProperty( "authenticationAjaxOverrideEvent", getProperty( "authenticationOverrideEvent", "" ) ) :
-                    getProperty( "authenticationOverrideEvent", "" )
-            );
+            var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
+            var relocateEvent = getProperty( eventType );
+            var overrideAction = getProperty( "overrideActions" )[ eventType ];
+            switch ( overrideAction ) {
+                case "relocate":
+                    relocate( relocateEvent );
+                    break;
+                case "override":
+                    event.overrideEvent( relocateEvent );
+                    break;
+                default:
+                    throw(
+                        type = "InvalidOverideActionType",
+                        message = "The type [#overrideAction#] is not a valid override action.  Valid types are ['relocate', 'override']."
+                    );
+            }
             return true;
         }
 
@@ -142,11 +174,22 @@ component extends="coldbox.system.Interceptor"{
             }
         }
 
-        event.overrideEvent(
-            event.isAjax() ?
-                getProperty( "authorizationAjaxOverrideEvent", getProperty( "authorizationOverrideEvent", "" ) ) :
-                getProperty( "authorizationOverrideEvent", "" )
-        );
+        var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
+        var relocateEvent = getProperty( eventType );
+        var overrideAction = getProperty( "overrideActions" )[ eventType ];
+        switch ( overrideAction ) {
+            case "relocate":
+                relocate( relocateEvent );
+                break;
+            case "override":
+                event.overrideEvent( relocateEvent );
+                break;
+            default:
+                throw(
+                    type = "InvalidOverideActionType",
+                    message = "The type [#overrideAction#] is not a valid override action.  Valid types are ['relocate', 'override']."
+                );
+        }
         return true;
     }
 

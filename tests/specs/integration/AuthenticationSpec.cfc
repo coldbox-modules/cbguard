@@ -20,7 +20,19 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
 
             it( "redirects the user if the component has a secured annotation and the user is not logged in", function() {
                 var event = execute( event = "Secured.index" );
-                expect( event.getValue( "event", "" ) ).toBe( "Main.onAuthenticationFailure" );
+                expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthenticationFailure" );
+            } );
+
+            it( "overrides the event if the component has a secured annotation and the user is not logged in with specific settings", function() {
+                withSwappedSettings(
+                    function( settings ) {
+                        settings.overrideActions.authenticationOverrideEvent = "override";
+                    },
+                    function() {
+                        var event = execute( event = "Secured.index" );
+                        expect( event.getValue( "event", "" ) ).toBe( "Main.onAuthenticationFailure" );
+                    }
+                );
             } );
 
             it( "does not redirect the user if the component has a secured annotation and the user is logged in", function() {
@@ -31,7 +43,19 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
 
             it( "redirects the user if the action has a secured annotation and the user is not logged in", function() {
                 var event = execute( event = "PartiallySecured.secured" );
-                expect( event.getValue( "event", "" ) ).toBe( "Main.onAuthenticationFailure" );
+                expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthenticationFailure" );
+            } );
+
+            it( "overrides the event if the action has a secured annotation and the user is not logged in with specific settings", function() {
+                withSwappedSettings(
+                    function( settings ) {
+                        settings.overrideActions.authenticationOverrideEvent = "override";
+                    },
+                    function() {
+                        var event = execute( event = "PartiallySecured.secured" );
+                        expect( event.getValue( "event", "" ) ).toBe( "Main.onAuthenticationFailure" );
+                    }
+                );
             } );
 
             it( "does not redirect the user if the action has a secured annotation and the user is logged in", function() {
