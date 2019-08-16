@@ -17,6 +17,12 @@ component {
                 "getUser"       = "getUser",
                 "isLoggedIn"    = "isLoggedIn",
                 "hasPermission" = "hasPermission"
+            },
+            "overrideActions" = {
+                "authenticationOverrideEvent" = "relocate",
+                "authenticationAjaxOverrideEvent" = "override",
+                "authorizationOverrideEvent" = "relocate",
+                "authorizationAjaxOverrideEvent" = "override"
             }
         };
 
