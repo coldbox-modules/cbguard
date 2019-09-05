@@ -1,7 +1,8 @@
 component extends="coldbox.system.Interceptor"{
 
-    property name="handlerService" inject="coldbox:handlerService";
     property name="coldboxVersion" inject="coldbox:fwSetting:version";
+    property name="handlerService" inject="coldbox:handlerService";
+    property name="moduleService" inject="coldbox:moduleService";
 
     void function configure() {}
 
@@ -16,8 +17,13 @@ component extends="coldbox.system.Interceptor"{
     * the event is overridden to the event specified in module settings.
     */
     function preProcess( event, rc, prc, interceptData, buffer ) {
-        if ( isNull( variables.authenticationService ) ) {
-            variables.authenticationService = wirebox.getInstance( getProperty( "AuthenticationService" ) );
+        var overrides = {};
+        if ( event.getCurrentModule() != "" ) {
+            var moduleConfig = moduleService.getModuleConfigCache()[ event.getCurrentModule() ];
+            var moduleSettings = moduleConfig.getPropertyMixin( "settings", "variables", {} );
+            if ( structKeyExists( moduleSettings, "cbguard" ) ) {
+                overrides = moduleSettings.cbguard;
+            }
         }
 
         if( listFirst( coldboxVersion, "." ) >= 5 ){
@@ -32,8 +38,8 @@ component extends="coldbox.system.Interceptor"{
 
         var handlerMetadata = getMetadata( handler );
 
-        return notAuthorizedForHandler( handlerMetadata, event ) ||
-            notAuthorizedForAction( handlerMetadata, event );
+        return notAuthorizedForHandler( handlerMetadata, event, overrides ) ||
+            notAuthorizedForAction( handlerMetadata, event, overrides );
     }
 
     /**
@@ -45,7 +51,19 @@ component extends="coldbox.system.Interceptor"{
     * If the user is not logged in or does not have one of the required permissions,
     * the event is overridden to the event specified in module settings.
     */
-    private function notAuthorizedForHandler( handlerMetadata, event ) {
+    private function notAuthorizedForHandler( handlerMetadata, event, overrides = {} ) {
+        var props = {};
+        structAppend( props, variables.properties, true );
+        structAppend( props, overrides, true );
+
+        if ( isSimpleValue( props.authenticationService ) ) {
+            props.authenticationService = wirebox.getInstance( props.authenticationService );
+        }
+        param props.authenticationOverrideEvent = "";
+        param props.authenticationAjaxOverrideEvent = props.authenticationOverrideEvent;
+        param props.authorizationOverrideEvent = "";
+        param props.authorizationAjaxOverrideEvent = props.authorizationOverrideEvent;
+
         if ( ! structKeyExists( handlerMetadata, "secured" ) ) {
             return false;
         }
@@ -54,10 +72,10 @@ component extends="coldbox.system.Interceptor"{
             return false;
         }
 
-        if ( ! invoke( authenticationService, getProperty( "methodNames" )[ "isLoggedIn" ] ) ) {
+        if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = getProperty( eventType );
-            var overrideAction = getProperty( "overrideActions" )[ eventType ];
+            var relocateEvent = props[ eventType ];
+            var overrideAction = props.overrideActions[ eventType ];
             switch ( overrideAction ) {
                 case "relocate":
                     relocate( relocateEvent );
@@ -83,17 +101,17 @@ component extends="coldbox.system.Interceptor"{
             return false;
         }
 
-        var loggedInUser = invoke( authenticationService, getProperty( "methodNames" )[ "getUser" ] );
+        var loggedInUser = invoke( props.authenticationService, props.methodNames[ "getUser" ] );
 
         for ( var permission in neededPermissions ) {
-            if ( invoke( loggedInUser, getProperty( "methodNames" )[ "hasPermission" ], { permission = permission } ) ) {
+            if ( invoke( loggedInUser, props.methodNames[ "hasPermission" ], { permission = permission } ) ) {
                 return false;
             }
         }
 
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = getProperty( eventType );
-        var overrideAction = getProperty( "overrideActions" )[ eventType ];
+        var relocateEvent = props[ eventType ];
+        var overrideAction = props.overrideActions[ eventType ];
         switch ( overrideAction ) {
             case "relocate":
                 relocate( relocateEvent );
@@ -119,7 +137,19 @@ component extends="coldbox.system.Interceptor"{
     * If the user is not logged in or does not have one of the required permissions,
     * the event is overridden to the event specified in module settings.
     */
-    private function notAuthorizedForAction( handlerMetadata, event ) {
+    private function notAuthorizedForAction( handlerMetadata, event, overrides = {} ) {
+        var props = {};
+        structAppend( props, variables.properties, true );
+        structAppend( props, overrides, true );
+
+        if ( isSimpleValue( props.authenticationService ) ) {
+            props.authenticationService = wirebox.getInstance( props.authenticationService );
+        }
+        param props.authenticationOverrideEvent = "";
+        param props.authenticationAjaxOverrideEvent = props.authenticationOverrideEvent;
+        param props.authorizationOverrideEvent = "";
+        param props.authorizationAjaxOverrideEvent = props.authorizationOverrideEvent;
+
         if ( ! structKeyExists( handlerMetadata, "functions" ) ) {
             return false;
         }
@@ -137,10 +167,10 @@ component extends="coldbox.system.Interceptor"{
             return false;
         }
 
-        if ( ! invoke( authenticationService, getProperty( "methodNames" )[ "isLoggedIn" ] ) ) {
+        if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = getProperty( eventType );
-            var overrideAction = getProperty( "overrideActions" )[ eventType ];
+            var relocateEvent = props[ eventType ];
+            var overrideAction = props.overrideActions[ eventType ];
             switch ( overrideAction ) {
                 case "relocate":
                     relocate( relocateEvent );
@@ -166,17 +196,17 @@ component extends="coldbox.system.Interceptor"{
             return false;
         }
 
-        var loggedInUser = invoke( authenticationService, getProperty( "methodNames" )[ "getUser" ] );
+        var loggedInUser = invoke( props.authenticationService, props.methodNames[ "getUser" ] );
 
         for ( var permission in neededPermissions ) {
-            if ( invoke( loggedInUser, getProperty( "methodNames" )[ "hasPermission" ], { permission = permission } ) ) {
+            if ( invoke( loggedInUser, props.methodNames[ "hasPermission" ], { permission = permission } ) ) {
                 return false;
             }
         }
 
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = getProperty( eventType );
-        var overrideAction = getProperty( "overrideActions" )[ eventType ];
+        var relocateEvent = props[ eventType ];
+        var overrideAction = props.overrideActions[ eventType ];
         switch ( overrideAction ) {
             case "relocate":
                 relocate( relocateEvent );
