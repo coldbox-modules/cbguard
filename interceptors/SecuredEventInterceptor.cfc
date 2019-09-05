@@ -26,17 +26,11 @@ component extends="coldbox.system.Interceptor"{
             }
         }
 
-        if( listFirst( coldboxVersion, "." ) >= 5 ){
-            var handlerBean = handlerService.getHandlerBean( event.getCurrentEvent() );
-        } else {
-            var handlerBean = handlerService.getRegisteredHandler( event.getCurrentEvent() );
+        var handlerBean = handlerService.getHandlerBean( event.getCurrentEvent() );
+        if ( ! handlerBean.isMetadataLoaded() ) {
+            handlerService.getHandler( handlerBean, event );
         }
-        var handler = handlerService.getHandler(
-            handlerBean,
-            event
-        );
-
-        var handlerMetadata = getMetadata( handler );
+        var handlerMetadata = handlerBean.getHandlerMetadata();
 
         return notAuthorizedForHandler( handlerMetadata, event, overrides ) ||
             notAuthorizedForAction( handlerMetadata, event, overrides );

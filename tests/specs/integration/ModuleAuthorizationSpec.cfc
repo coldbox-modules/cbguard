@@ -61,13 +61,13 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
                 expect( event.getValue( "event", "" ) ).toBe( "myModule:PermissionActionSecured.fooPermissionAction" );
             } );
 
-            it( "redirects the user if the component has a secured annotatoin with a list of permissions and the user has at least one of the required permissions but the action also has a secured annotation with a list of permissions and the user does not have any of the required permissions", function() {
+            it( "redirects the user if the component has a secured annotation with a list of permissions and the user has at least one of the required permissions but the action also has a secured annotation with a list of permissions and the user does not have any of the required permissions", function() {
                 authenticationService.login( createUser( { permissions = [ "one" ] } ) );
                 var event = execute( event = "myModule:DoubleSecured.securedAction" );
                 expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "myModule:Main.onAuthorizationFailure" );
             } );
 
-            it( "does not redirect the user if the component has a secured annotatoin with a list of permissions and the user has at least one of the required permissions and the action also has a secured annotation with a list of permissions and the user has at least one of the required permissions", function() {
+            it( "does not redirect the user if the component has a secured annotation with a list of permissions and the user has at least one of the required permissions and the action also has a secured annotation with a list of permissions and the user has at least one of the required permissions", function() {
                 authenticationService.login( createUser( { permissions = [ "one", "two" ] } ) );
                 var event = execute( event = "myModule:DoubleSecured.securedAction" );
                 expect( event.valueExists( "relocate_EVENT" ) ).toBeFalse();
