@@ -1,3 +1,19 @@
+# v3.0.0
+## 05 Sep 2019 — 19:09:13 UTC
+
+### BREAKING
+
++ __cbguard:__ Use ColdBox 5.6's handler metadata cache ([72ba3d0](https://github.com/coldbox-modules/cbguard/commit/72ba3d054cb74e39d073f1aded8207bf0c4d97ec))
+
+### feat
+
++ __cbguard:__ Allow for per-module overrides of cbguard settings ([2dbdc53](https://github.com/coldbox-modules/cbguard/commit/2dbdc53ce61295275f4170868f49e8f8e7bb8bd6))
+
+### fix
+
++ __cbguard:__ Ensure implicit view events are still allowed ([01d065e](https://github.com/coldbox-modules/cbguard/commit/01d065e349374762f3bba24341393c54baadf1d8))
+
+
 # v2.0.0
 ## 16 Aug 2019 — 04:47:13 UTC
 
