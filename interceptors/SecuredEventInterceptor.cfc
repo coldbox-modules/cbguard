@@ -74,7 +74,7 @@ component extends="coldbox.system.Interceptor"{
 
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = props.eventType;
+            var relocateEvent = props[ eventType ];
             var overrideAction = props.overrideActions[ eventType ];
             switch ( overrideAction ) {
                 case "relocate":
@@ -110,7 +110,7 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = props.eventType;
+        var relocateEvent = props[ eventType ];
         var overrideAction = props.overrideActions[ eventType ];
         switch ( overrideAction ) {
             case "relocate":
@@ -169,7 +169,7 @@ component extends="coldbox.system.Interceptor"{
 
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = props.eventType;
+            var relocateEvent = props[ eventType ];
             var overrideAction = props.overrideActions[ eventType ];
             switch ( overrideAction ) {
                 case "relocate":
@@ -205,7 +205,7 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = props.eventType;
+        var relocateEvent = props[ eventType ];
         var overrideAction = props.overrideActions[ eventType ];
         switch ( overrideAction ) {
             case "relocate":
