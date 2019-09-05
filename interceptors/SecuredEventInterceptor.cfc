@@ -27,6 +27,10 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var handlerBean = handlerService.getHandlerBean( event.getCurrentEvent() );
+        if ( handlerBean.getHandler() == "" ) {
+            return;
+        }
+
         if ( ! handlerBean.isMetadataLoaded() ) {
             handlerService.getHandler( handlerBean, event );
         }
