@@ -63,6 +63,11 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
                 var event = execute( event = "PartiallySecured.secured" );
                 expect( event.getValue( "event", "" ) ).toBe( "PartiallySecured.secured" );
             } );
+
+            it( "does nothing if the event is for an has no handler", function() {
+                var event = execute( event = "without.handlers" );
+                expect( event.getValue( "event", "" ) ).toBe( "without.handlers" );
+            } );
         } );
     }
 
