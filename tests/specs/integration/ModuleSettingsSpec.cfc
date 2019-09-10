@@ -12,6 +12,7 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
 
             it( "can prevent the interceptor from being added automatically", function() {
                 getController().getInterceptorService().unregister( "SecuredEventInterceptor" );
+                getWireBox().getBinder().unMap( "interceptor-SecuredEventInterceptor" );
                 getController().getConfigSettings().moduleSettings.cbguard.autoRegisterInterceptor = false;
                 getController().getModuleService()
                     .registerAndActivateModule( "cbguard", "testingModuleRoot" );

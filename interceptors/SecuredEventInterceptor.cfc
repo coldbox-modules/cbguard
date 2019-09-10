@@ -17,6 +17,10 @@ component extends="coldbox.system.Interceptor"{
     * the event is overridden to the event specified in module settings.
     */
     function preProcess( event, rc, prc, interceptData, buffer ) {
+        if ( event.getHTTPMethod() == "OPTIONS" ) {
+            return;
+        }
+
         var overrides = {};
         if ( event.getCurrentModule() != "" ) {
             var moduleConfig = moduleService.getModuleConfigCache()[ event.getCurrentModule() ];

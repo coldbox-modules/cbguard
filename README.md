@@ -218,3 +218,10 @@ component {
 
 }
 ```
+
+## `autoRegisterInterceptor`
+
+If you need more control over the order of your interceptors you can
+disable the automatic loading of the `SecuredEventInterceptor` interceptor.
+If you do this you will need to register it yourself
+(most likely in `config/ColdBox.cfc`) as `cbguard.interceptors.SecuredEventInterceptor`.

@@ -68,6 +68,13 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
                 var event = execute( event = "without.handlers" );
                 expect( event.getValue( "event", "" ) ).toBe( "without.handlers" );
             } );
+
+            it( "does nothing for options requests", function() {
+                prepareMock( getRequestContext() ).$( "getHTTPMethod", "OPTIONS" );
+                var event = execute( event = "Secured.index" );
+                expect( event.getValue( "event", "" ) ).toBe( "Secured.index" );
+                expect( event.valueExists( "relocate_EVENT" ) ).toBeFalse( "Event should not be relocated on an OPTIONS request" );
+            } );
         } );
     }
 
