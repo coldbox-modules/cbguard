@@ -1,3 +1,15 @@
+# v3.1.0
+## 10 Sep 2019 — 21:47:20 UTC
+
+### feat
+
++ __ModuleConfig:__ Add a flag to prevent automatic registration ([7d376f3](https://github.com/coldbox-modules/cbguard/commit/7d376f341d2ba870fb16ff9d5d35a0800243a9ef))
+
+### fix
+
++ __SecuredEventInterceptor:__ Ignore OPTIONS requests ([c29810f](https://github.com/coldbox-modules/cbguard/commit/c29810f680c1e6e4c42223ebf2f95f6d2d45ff2a))
+
+
 # v3.0.0
 ## 05 Sep 2019 — 19:09:13 UTC
 
