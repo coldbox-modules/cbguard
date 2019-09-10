@@ -8,6 +8,7 @@ component {
 
     function configure() {
         settings = {
+            "autoRegisterInterceptor"         = true,
             "authenticationService"           = "authenticationService@cbauth",
             "authenticationOverrideEvent"     = "Main.onAuthenticationFailure",
             "authenticationAjaxOverrideEvent" = "",
@@ -36,11 +37,13 @@ component {
     }
 
     function onLoad() {
-        controller.getInterceptorService().registerInterceptor(
-            interceptorName = "SecuredEventInterceptor",
-            interceptorClass = "#moduleMapping#.interceptors.SecuredEventInterceptor",
-            interceptorProperties = settings
-        );
+        if ( settings.autoRegisterInterceptor ) {
+            controller.getInterceptorService().registerInterceptor(
+                interceptorName = "SecuredEventInterceptor",
+                interceptorClass = "#moduleMapping#.interceptors.SecuredEventInterceptor",
+                interceptorProperties = settings
+            );
+        }
     }
 
 }
