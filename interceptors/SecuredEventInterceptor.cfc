@@ -173,13 +173,13 @@ component extends="coldbox.system.Interceptor"{
                 return func.name == "onAuthenticationFailure";
             } );
         if ( !arrayIsEmpty( handlerAuthenticationFailure ) ) {
-            props.authenticationOverrideEvent = "#event.getCurrentHandler()#.onAuthenticationFailure"
+            props.authenticationOverrideEvent = "#event.getCurrentHandler()#.onAuthenticationFailure";
         }
         var handlerAuthorizationFailure = arrayFilter( handlerMetadata.functions, function( func ) {
                 return func.name == "onAuthorizationFailure";
             } );
         if ( !arrayIsEmpty( handlerAuthorizationFailure ) ) {
-            props.authorizationOverrideEvent = "#event.getCurrentHandler()#.onAuthorizationFailure"
+            props.authorizationOverrideEvent = "#event.getCurrentHandler()#.onAuthorizationFailure";
         }
 
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
