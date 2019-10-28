@@ -168,21 +168,15 @@ component extends="coldbox.system.Interceptor"{
         if ( ! structKeyExists( targetActionMetadata, "secured" ) || targetActionMetadata.secured == false ) {
             return false;
         }
-        //override the coldbox.cfc global events if they exist in the handler. Per docs, they will override for Ajax requests also.
-        var handlerAuthenticationFailure = arrayFilter( handlerMetadata.functions, function( func ) {
-                return func.name == "onAuthenticationFailure";
-            } );
-        if ( !arrayIsEmpty( handlerAuthenticationFailure ) ) {
-            props.authenticationOverrideEvent = "#event.getCurrentHandler()#.onAuthenticationFailure";
-        }
-        var handlerAuthorizationFailure = arrayFilter( handlerMetadata.functions, function( func ) {
-                return func.name == "onAuthorizationFailure";
-            } );
-        if ( !arrayIsEmpty( handlerAuthorizationFailure ) ) {
-            props.authorizationOverrideEvent = "#event.getCurrentHandler()#.onAuthorizationFailure";
-        }
 
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+             //override the coldbox.cfc global onAuthenticationFailure if it exists in the handler. Per docs, they will override for Ajax requests also.
+            var handlerAuthenticationFailure = arrayFilter( handlerMetadata.functions, function( func ) {
+                    return func.name == "onAuthenticationFailure";
+                } );
+            if ( !arrayIsEmpty( handlerAuthenticationFailure ) ) {
+                props.authenticationOverrideEvent = "#event.getCurrentHandler()#.onAuthenticationFailure";
+            }
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
             var relocateEvent = props[ eventType ];
             var overrideAction = props.overrideActions[ eventType ];
@@ -218,7 +212,13 @@ component extends="coldbox.system.Interceptor"{
                 return false;
             }
         }
-
+        //override the coldbox.cfc global onAuthorizationFailure if it exists in the handler. Per docs, they will override for Ajax requests also.
+        var handlerAuthorizationFailure = arrayFilter( handlerMetadata.functions, function( func ) {
+                return func.name == "onAuthorizationFailure";
+            } );
+        if ( !arrayIsEmpty( handlerAuthorizationFailure ) ) {
+            props.authorizationOverrideEvent = "#event.getCurrentHandler()#.onAuthorizationFailure";
+        }
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
         var relocateEvent = props[ eventType ];
         var overrideAction = props.overrideActions[ eventType ];
