@@ -218,11 +218,42 @@ component {
 
 }
 ```
+
+### Local Handler Overrides
+
+If an `onAuthenticationFailure` or `onAuthorizationFailure` method exists on the handler being
+secured, it will be used in the case of an authentication or authorization failure event,
+respectively.
+
+```
+// handlers/Admin.cfc
+component secured {
+
+    function index( event, rc, prc ) {
+        event.setView( "admin/index" );
+    }
+
+    function secret( event, rc, prc ) secured="superadmin" {
+        event.setView( "admin/secret" );
+    }
+
+    function onAuthenticationFailure( event, rc, prc ) {
+        relocate( "/login" );
+    }
+
+    function onAuthenticationFailure( event, rc, prc ) {
+        flash.put( "authorizationError", "You don't have the correct permissions to access that resource." );
+        redirectBack(); // from the redirectBack module
+    }
+
+}
+```
+
 ### Override Order
 cbguard will process your authorization and authentication failures in the following order:
-1. Inline handler methods (onAuthenticationFailure & onAuthorizationFailure within your handlers)
-2. cbguard settings in the ModuleConfig of the handler's module. (Overrides in modules_app/api/ModuleConfig.cfc when the handler is in the module [modules_app/api/handlers/Main.cfc])
-3. Overrides in config/ColdBox.cfc using moduleSettings
+1. Inline handler methods (`onAuthenticationFailure` & `onAuthorizationFailure` within your handlers).
+2. cbguard settings in the ModuleConfig of the handler's module. (Overrides in `modules_app/api/ModuleConfig.cfc` when the handler is in the module, i.e. `modules_app/api/handlers/Main.cfc`.)
+3. Overrides in `config/ColdBox.cfc` using `moduleSettings`.
 4. Default settings for the module.
 
 ## `autoRegisterInterceptor`
