@@ -1,19 +1,9 @@
 component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
 
-    property name="authenticationService" inject="AuthenticationService";
     property name="interceptorService" inject="coldbox:interceptorService";
-
-    function beforeAll() {
-        super.beforeAll();
-        getWireBox().autowire( this );
-    }
 
     function run() {
         describe( "API Redirect Specs", function() {
-            beforeEach( function() {
-                authenticationService.logout();
-            } );
-
             it( "redirects the user to the normal authentication failure event if no API authentication event is set", function() {
                 var securedEventInterceptor = interceptorService.getInterceptor( "SecuredEventInterceptor" );
                 var authenticationFailureRedirect = securedEventInterceptor.getProperty( "authenticationOverrideEvent" );
