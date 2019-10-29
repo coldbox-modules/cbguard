@@ -1,6 +1,6 @@
 # cbguard
 
-[![Master Branch Build Status](https://img.shields.io/travis/elpete/cbguard/master.svg?style=flat-square&label=master)](https://travis-ci.org/elpete/cbguard)
+[![Master Branch Build Status](https://img.shields.io/travis/coldbox-modules/cbguard/master.svg?style=flat-square&label=master)](https://travis-ci.org/coldbox-modules/cbguard)
 
 ## Annotation driven guards for authentication and authorization in ColdBox
 
@@ -222,7 +222,7 @@ component {
 cbguard will process your authorization and authentication failures in the following order:
 1. Inline handler methods (onAuthenticationFailure & onAuthorizationFailure within your handlers)
 2. cbguard settings in the ModuleConfig of the handler's module. (Overrides in modules_app/api/ModuleConfig.cfc when the handler is in the module [modules_app/api/handlers/Main.cfc])
-3. Overrides in config/ColdBox.cfc using moduleSettings 
+3. Overrides in config/ColdBox.cfc using moduleSettings
 4. Default settings for the module.
 
 ## `autoRegisterInterceptor`
