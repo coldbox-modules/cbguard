@@ -1,3 +1,11 @@
+# v4.0.0
+## 29 Oct 2019 — 16:20:50 UTC
+
+### BREAKING
+
++ __\*:__ feat: Ability to use local override handlers if they exist ([f4ab223](https://github.com/coldbox-modules/cbguard/commit/f4ab2231e3a3b7d52d8e31c79bafc348e08265e5))
+
+
 # v3.1.0
 ## 10 Sep 2019 — 21:47:20 UTC
 
