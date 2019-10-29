@@ -75,7 +75,7 @@ component extends="coldbox.system.Interceptor"{
 
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             //override the coldbox.cfc global onAuthenticationFailure if it exists in the handler. Per docs, they will override for Ajax requests also.  
-            props.override = "authenticationOverrideEvent"
+            props.override = "authenticationOverrideEvent";
             props[props.override] = getOverride(handlerMetadata, event, props);
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : props.override;
             var relocateEvent = props[ eventType ];
