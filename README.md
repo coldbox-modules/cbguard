@@ -1,6 +1,6 @@
 # cbguard
 
-[![Master Branch Build Status](https://img.shields.io/travis/elpete/cbguard/master.svg?style=flat-square&label=master)](https://travis-ci.org/elpete/cbguard)
+[![Master Branch Build Status](https://img.shields.io/travis/coldbox-modules/cbguard/master.svg?style=flat-square&label=master)](https://travis-ci.org/coldbox-modules/cbguard)
 
 ## Annotation driven guards for authentication and authorization in ColdBox
 
@@ -93,15 +93,15 @@ When a user is denied access to a action, an event of your choosing is executed 
 
 This is the event that is executed when the user is not logged in and is attempting to execute a secured action, whether or not that handler or action has permissions.
 
-1. `authorizationOverrideEvent` (Default: same as `authenticationOverrideEvent`)
+2. `authorizationOverrideEvent` (Default: same as `authenticationOverrideEvent`)
 
 This is the event that is executed when the user is logged in and is attempting to execute a secured action but does not have the requisite permissions.
 
-1. `authenticationAjaxOverrideEvent` (Default: `Main.onAuthenticationFailure`)
+3. `authenticationAjaxOverrideEvent` (Default: `Main.onAuthenticationFailure`)
 
 This is the event that is executed when the user is not logged in and is attempting to execute a secured action via ajax (`event.isAjax()`), whether or not that handler or action has permissions.  By default, this will execute the same action that is configured for `authenticationOverrideEvent`.
 
-1. `authorizationAjaxOverrideEvent` (Default: same as `authorizationOverrideEvent`)
+4. `authorizationAjaxOverrideEvent` (Default: same as `authorizationOverrideEvent`)
 
 This is the event that is executed when the user is logged in and is attempting to execute a secured action via ajax (`event.isAjax()`) but does not have the requisite permissions. By default, this will execute the same action that is configured for `authorizationOverrideEvent`.
 
@@ -160,7 +160,7 @@ moduleSettings = {
 The default `authenticationService` for `cbguard` is `AuthenticationService@cbauth`.  `cbauth` follows the `AuthenticationServiceInterface` out of the box.
 
 
-### Advanced Setup
+### config/ColdBox.cfc Settings
 
 You can change the method names called on the `AuthenticationService` and the returned `User` if you need to.  We highly discourage this use case, as it makes it harder to utilize the `cbguard` conventions across projects.  However, should the need arise, you can modify the method names as follows:
 
@@ -218,6 +218,43 @@ component {
 
 }
 ```
+
+### Local Handler Overrides
+
+If an `onAuthenticationFailure` or `onAuthorizationFailure` method exists on the handler being
+secured, it will be used in the case of an authentication or authorization failure event,
+respectively.
+
+```
+// handlers/Admin.cfc
+component secured {
+
+    function index( event, rc, prc ) {
+        event.setView( "admin/index" );
+    }
+
+    function secret( event, rc, prc ) secured="superadmin" {
+        event.setView( "admin/secret" );
+    }
+
+    function onAuthenticationFailure( event, rc, prc ) {
+        relocate( "/login" );
+    }
+
+    function onAuthenticationFailure( event, rc, prc ) {
+        flash.put( "authorizationError", "You don't have the correct permissions to access that resource." );
+        redirectBack(); // from the redirectBack module
+    }
+
+}
+```
+
+### Override Order
+cbguard will process your authorization and authentication failures in the following order:
+1. Inline handler methods (`onAuthenticationFailure` & `onAuthorizationFailure` within your handlers).
+2. cbguard settings in the ModuleConfig of the handler's module. (Overrides in `modules_app/api/ModuleConfig.cfc` when the handler is in the module, i.e. `modules_app/api/handlers/Main.cfc`.)
+3. Overrides in `config/ColdBox.cfc` using `moduleSettings`.
+4. Default settings for the module.
 
 ## `autoRegisterInterceptor`
 

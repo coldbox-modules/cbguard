@@ -73,25 +73,4 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
         } );
     }
 
-    private function createUser( overrides = {} ) {
-        var props = {
-            id = 1,
-            email = "johndoe@example.com",
-            username = "johndoe",
-            permissions = []
-        };
-        structAppend( props, overrides, true );
-        return tap( getInstance( "User" ), function( user ) {
-            user.setId( props.id );
-            user.setEmail( props.email );
-            user.setUsername( props.username );
-            user.setPermissions( props.permissions );
-        } );
-    }
-
-    private function tap( variable, callback ) {
-        callback( variable );
-        return variable;
-    }
-
 }

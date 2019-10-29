@@ -75,9 +75,17 @@ component extends="coldbox.system.Interceptor"{
         }
 
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+            // Override the coldbox.cfc global onAuthenticationFailure if it exists in the handler.
+            // Per docs, they will override for Ajax requests also.
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = props[ eventType ];
+            var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
             var overrideAction = props.overrideActions[ eventType ];
+
+            // If the override is within the same handler that is being secured,
+            // we have to override the event instead of relocating. Prevents a circle of death.
+            if ( event.getCurrentHandler() == handlerService.getHandlerBean( relocateEvent ).getHandler() ) {
+                overrideAction = "override";
+            }
             switch ( overrideAction ) {
                 case "relocate":
                     relocate( relocateEvent );
@@ -111,9 +119,17 @@ component extends="coldbox.system.Interceptor"{
             }
         }
 
+        // At this point, we know the user did NOT have any of the required permissions,
+        // so we will fire the appropriate authorization failure events
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = props[ eventType ];
+        var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
         var overrideAction = props.overrideActions[ eventType ];
+
+        // If the override is within the same handler that is being secured,
+        // we have to override the event instead of relocating. Prevents a circle of death.
+        if ( event.getCurrentHandler() == handlerService.getHandlerBean( relocateEvent ).getHandler() ) {
+            overrideAction = 'override';
+        }
         switch ( overrideAction ) {
             case "relocate":
                 relocate( relocateEvent );
@@ -168,10 +184,9 @@ component extends="coldbox.system.Interceptor"{
         if ( ! structKeyExists( targetActionMetadata, "secured" ) || targetActionMetadata.secured == false ) {
             return false;
         }
-
         if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = props[ eventType ];
+            var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
             var overrideAction = props.overrideActions[ eventType ];
             switch ( overrideAction ) {
                 case "relocate":
@@ -206,9 +221,12 @@ component extends="coldbox.system.Interceptor"{
             }
         }
 
+        // Override the coldbox.cfc global onAuthorizationFailure if it exists in the handler.
+        // Per docs, they will override for Ajax requests also.
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = props[ eventType ];
+        var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
         var overrideAction = props.overrideActions[ eventType ];
+
         switch ( overrideAction ) {
             case "relocate":
                 relocate( relocateEvent );
@@ -224,5 +242,25 @@ component extends="coldbox.system.Interceptor"{
         }
         return true;
     }
-
+    /**
+     * Override the coldbox.cfc global on[eventType]Failure if it exists in the handler.
+     */
+    private function getOverrideEvent( handlerMetadata, event, props, eventType ) {
+        var handlerOverrides = arrayFilter( arguments.handlerMetadata.functions, function( func ) {
+            // In case some other override comes up in the future, using switch
+            switch( eventType ) {
+                case "authenticationOverrideEvent":
+                case "authenticationAjaxOverrideEvent":
+                    return func.name == "onAuthenticationFailure";
+                case "authorizationOverrideEvent":
+                case "authorizationAjaxOverrideEvent":
+                    return func.name == "onAuthorizationFailure";
+                default:
+                    return false;
+            }
+        } );
+        return handlerOverrides.isEmpty() ?
+            arguments.props[ eventType ] :
+            arguments.event.getCurrentHandler() & "." & handlerOverrides[ 1 ].name;
+    }
 }
