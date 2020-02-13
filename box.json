@@ -2,7 +2,7 @@
     "name":"cbguard",
     "version":"4.0.0",
     "author":"",
-    "location":"coldbox-modules/cbguard#v4.0.0",
+    "location":"forgeboxStorage",
     "homepage":"https://github.com/coldbox-modules/cbguard",
     "documentation":"https://github.com/coldbox-modules/cbguard",
     "repository":{
@@ -23,9 +23,7 @@
         "testbox":"testbox/",
         "coldbox":"tests/resources/app/coldbox/"
     },
-    "scripts":{
-        "postVersion":"package set location='coldbox-modules/cbguard#v`package version`'"
-    },
+    "scripts":{},
     "ignore":[
         "**/.*",
         "test",
