@@ -1,3 +1,11 @@
+# v4.0.1
+## 13 Feb 2020 — 17:18:56 UTC
+
+### other
+
++ __\*:__ chore: Use forgeboxStorage ([aae5e7b](https://github.com/coldbox-modules/cbguard/commit/aae5e7bdd550d6304c863139ab9aaa001ed5a856))
+
+
 # v4.0.0
 ## 29 Oct 2019 — 16:20:50 UTC
 
