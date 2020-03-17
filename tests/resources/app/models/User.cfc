@@ -10,7 +10,10 @@ component accessors="true" {
         return this;
     }
 
-    public boolean function hasPermission( required string permission ) {
+    public boolean function hasPermission( required string permission, struct additionalArgs = {} ) {
+        if ( arguments.permission == "access-post" ) {
+            return arguments.additionalArgs.post.getId() == getId();
+        }
         return arrayContains( getPermissions(), permission );
     }
 

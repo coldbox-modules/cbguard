@@ -1,5 +1,7 @@
 component {
 
+    property name="wirebox" inject="wirebox";
+
     public function getUser() {
         if ( structKeyExists( request, "user" ) ) {
             return request.user;
