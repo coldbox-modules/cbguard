@@ -1,3 +1,17 @@
+# v4.1.0
+## 19 Mar 2020 — 20:49:31 UTC
+
+### feat
+
++ __Guard:__ Add a guard service that can authorize anywhere during the request ([0602b9b](https://github.com/coldbox-modules/cbguard/commit/0602b9b9f351c9f7d9ba0818d966ea6ab91c7eb6))
++ __Guard:__ Add a guard service that can authorize anywhere during the request ([d5cba31](https://github.com/coldbox-modules/cbguard/commit/d5cba31789b7e478c86caaf1acdc412c00ad2ae7))
+
+### other
+
++ __\*:__ Add information on defining custom guards
+ ([36c6f63](https://github.com/coldbox-modules/cbguard/commit/36c6f63432d262a4cc5c1f7f0c0ec34ae3bd047b))
+
+
 # v4.0.1
 ## 13 Feb 2020 — 17:18:56 UTC
 
