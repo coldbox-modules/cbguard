@@ -84,6 +84,80 @@ component secured {
 
 While the user needs to be logged in to interact at all with this handler, they also need the `create_posts` permission to interact with the `new` action.
 
+### Service approach
+
+`cbguard` also allows you to check for authorization at any point in the request lifecycle using the `Guard@cbguard` component.
+
+```cfc
+component secured {
+
+    property name="guard" inject="@cbguard";
+
+    function update( event, rc, prc ) {
+        var post = getInstance( "Post" ).findOrFail( rc.post );
+
+        // this will throw a `NotAuthorized` exception if the user cannot update the post
+        guard.authorize( "update-post", { "post": post } );
+
+        // update the post as normal...
+    }
+
+}
+```
+
+The methods available to you on the `Guard` component are as follows:
+
+```cfc
+public boolean function allows( required any permissions, struct additionalArgs = {} );
+public boolean function denies( required any permissions, struct additionalArgs = {} );
+public boolean function all( required any permissions, struct additionalArgs = {} );
+public boolean function none( required any permissions, struct additionalArgs = {} );
+public void function authorize( required any permissions, struct additionalArgs = {}, string errorMessage );
+```
+
+In all cases `permissions` can be either a string, a list of strings, or an array of strings.
+
+In the case of `authorize` the `errorMessage` replaces the thrown error message
+in the `NotAuthorized`. exception.  It can also be a closure that takes the following shape:
+
+```cfc
+string function errorMessage( array permissions, any user, struct additionalArgs );
+```
+
+#### Defining Custom Guards
+
+While handling all of your guard clauses inside the `hasPermission` method on your user
+works fine, you may want to define a different way to handle permissions.  You
+can do this by declaring custom guards using the `guard.define` method.  Here's the signature:
+
+```cfc
+public Guard function define( required string name, required any callback );
+```
+
+The `name` will match against a permission name.  If it matches, the guard is
+called instead of calling `hasPermission` on the `User` model. (You can always
+call `hasPermission` on the `User` inside your guard callback if you need.)
+
+The callback can be: a closure or UDF, a component with an `authorize` function,
+or a WireBox mapping to a component with an `authorize` function. Please note
+that the authorize function must be explicitly defined and public (No `onMissingMethod`).
+This `authorize` function is called with two parameters: the `user` being authorized
+and a struct of `additionalArgs` and must return a `boolean`, like so:
+
+```cfc
+public boolean function authorize( required any user, struct additionalArgs = {} );
+```
+
+Using this approach, you can define custom guards anywhere in your application:
+`config/ColdBox.cfc`, `ModuleConfig.cfc` of your custom modules, etc.  The
+`Guard` component is registered as a singleton, so it will keep track of all the
+guards registered, even from different sources.
+
+If you have a need to remove a guard definition you can do so with the `removeDefinition` method:
+
+```cfc
+public Guard function removeDefinition( required string name );
+```
 
 ### Redirects
 
@@ -118,7 +192,7 @@ First, there are two interfaces that must be followed:
 interface {
 
     /**
-    * Must return an object that conforms to `HasPermissionsInterface`.
+    * Must return an object that conforms to `HasPermissionInterface`.
     * (This may be an implicit implements.)
     */
     public HasPermissionInterface function getUser();
@@ -139,8 +213,11 @@ interface {
 
     /**
     * Returns true if the user has the specified permission.
+    * Any additional arguments may be passed in as the second argument.
+    * This allows you to check if a user can access a specific resource,
+    * rather than just a generic check.
     */
-    public boolean function hasPermission( required string permission );
+    public boolean function hasPermission( required string permission, struct additionalArgs );
 
 }
 ```
