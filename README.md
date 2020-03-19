@@ -107,7 +107,7 @@ component secured {
 
 The methods available to you on the `Guard` component are as follows:
 
-```
+```cfc
 public boolean function allows( required any permissions, struct additionalArgs = {} );
 public boolean function denies( required any permissions, struct additionalArgs = {} );
 public boolean function all( required any permissions, struct additionalArgs = {} );
@@ -120,8 +120,43 @@ In all cases `permissions` can be either a string, a list of strings, or an arra
 In the case of `authorize` the `errorMessage` replaces the thrown error message
 in the `NotAuthorized`. exception.  It can also be a closure that takes the following shape:
 
+```cfc
+string function errorMessage( array permissions, any user, struct additionalArgs );
 ```
-string function errorMessage( string failedPermission, any user, struct additionalArgs );
+
+#### Defining Custom Guards
+
+While handling all of your guard clauses inside the `hasPermission` method on your user
+works fine, you may want to define a different way to handle permissions.  You
+can do this by declaring custom guards using the `guard.define` method.  Here's the signature:
+
+```cfc
+public Guard function define( required string name, required any callback );
+```
+
+The `name` will match against a permission name.  If it matches, the guard is
+called instead of calling `hasPermission` on the `User` model. (You can always
+call `hasPermission` on the `User` inside your guard callback if you need.)
+
+The callback can be: a closure or UDF, a component with an `authorize` function,
+or a WireBox mapping to a component with an `authorize` function. Please note
+that the authorize function must be explicitly defined and public (No `onMissingMethod`).
+This `authorize` function is called with two parameters: the `user` being authorized
+and a struct of `additionalArgs` and must return a `boolean`, like so:
+
+```cfc
+public boolean function authorize( required any user, struct additionalArgs = {} );
+```
+
+Using this approach, you can define custom guards anywhere in your application:
+`config/ColdBox.cfc`, `ModuleConfig.cfc` of your custom modules, etc.  The
+`Guard` component is registered as a singleton, so it will keep track of all the
+guards registered, even from different sources.
+
+If you have a need to remove a guard definition you can do so with the `removeDefinition` method:
+
+```cfc
+public Guard function removeDefinition( required string name );
 ```
 
 ### Redirects

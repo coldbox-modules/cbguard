@@ -99,6 +99,34 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
                 var event = execute( event = "GuardSpecHandler.accessPost" );
                 expect( event.getPrivateValue( "isAllowed" ) ).toBeFalse();
             } );
+
+            it( "can define a guard that will be fired instead of hasPermission if it exists", function() {
+                var guard = getWireBox().getInstance( "Guard@cbguard" );
+                guard.define( "access-post", function( user, additionalArgs ) {
+                    return user.getId() == 2;
+                } );
+
+                try {
+                    variables.authenticationService.login( createUser( { id = 2, permissions = [] } ) );
+                    var event = execute( event = "GuardSpecHandler.accessPost" );
+                    expect( event.getPrivateValue( "isAllowed" ) ).toBeTrue();
+                } finally {
+                    guard.removeDefinition( "access-post" );
+                }
+            } );
+
+            it( "can define a guard that will be fired instead of hasPermission if it exists using a Wirebox mapping", function() {
+                var guard = getWireBox().getInstance( "Guard@cbguard" );
+                guard.define( "access-post", "CustomGuard" );
+
+                try {
+                    variables.authenticationService.login( createUser( { id = 2, permissions = [] } ) );
+                    var event = execute( event = "GuardSpecHandler.accessPost" );
+                    expect( event.getPrivateValue( "isAllowed" ) ).toBeTrue();
+                } finally {
+                    guard.removeDefinition( "access-post" );
+                }
+            } );
         } );
     }
 
