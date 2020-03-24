@@ -3,8 +3,14 @@ component extends="coldbox.system.Interceptor"{
     property name="coldboxVersion" inject="coldbox:fwSetting:version";
     property name="handlerService" inject="coldbox:handlerService";
     property name="moduleService" inject="coldbox:moduleService";
+    property name="invalidEventHandler" inject="coldbox:setting:invalidEventHandler";
 
-    void function configure() {}
+    void function configure() {
+        variables.onInvalidEventHandlerBean = javacast( "null", "" );
+        if ( len( variables.invalidEventHandler ) ) {
+            variables.onInvalidEventHandlerBean = handlerService.getHandlerBean( variables.invalidEventHandler );
+        }
+    }
 
     /**
     * Check the current event's handler for `secured` metadata annotations
@@ -31,6 +37,19 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var handlerBean = handlerService.getHandlerBean( event.getCurrentEvent() );
+
+        if ( isInvalidEventHandlerBean( handlerBean ) ) {
+            // ColdBox tries to detect invalid event handler loops by keeping
+            // track of the last invalid event to fire.  If that invalid event
+            // fires twice, it throws a hard exception to prevent infinite loops.
+            // Unfortunately for us, just attempting to get a handler bean
+            // starts the invalid event handling.  Here, if we got the invalid
+            // event handler bean back, we reset the `_lastInvalidEvent` so
+            // ColdBox can handle the invalid event properly.
+            request._lastInvalidEvent = variables.invalidEventHandler;
+            return;
+        }
+
         if ( handlerBean.getHandler() == "" ) {
             return;
         }
@@ -262,5 +281,18 @@ component extends="coldbox.system.Interceptor"{
         return handlerOverrides.isEmpty() ?
             arguments.props[ eventType ] :
             arguments.event.getCurrentHandler() & "." & handlerOverrides[ 1 ].name;
+    }
+
+    private boolean function isInvalidEventHandlerBean( required handlerBean ) {
+        if ( isNull( variables.onInvalidEventHandlerBean ) ) {
+            return false;
+        }
+
+        return (
+            variables.onInvalidEventHandlerBean.getInvocationPath() == arguments.handlerBean.getInvocationPath() &&
+            variables.onInvalidEventHandlerBean.getHandler() == arguments.handlerBean.getHandler() &&
+            variables.onInvalidEventHandlerBean.getMethod() == arguments.handlerBean.getMethod() &&
+            variables.onInvalidEventHandlerBean.getModule() == arguments.handlerBean.getModule()
+        );
     }
 }
