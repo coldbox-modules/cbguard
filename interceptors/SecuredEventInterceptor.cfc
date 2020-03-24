@@ -1,4 +1,4 @@
-component extends="coldbox.system.Interceptor"{
+component extends="coldbox.system.Interceptor" {
 
     property name="coldboxVersion" inject="coldbox:fwSetting:version";
     property name="handlerService" inject="coldbox:handlerService";
@@ -13,16 +13,22 @@ component extends="coldbox.system.Interceptor"{
     }
 
     /**
-    * Check the current event's handler for `secured` metadata annotations
-    * on the handler and the current action.
-    *
-    * If a `secured` annotation is found, the permissions list attached
-    * is checked against the current user's permissions.
-    *
-    * If the user is not logged in or does not have one of the required permissions,
-    * the event is overridden to the event specified in module settings.
-    */
-    function preProcess( event, rc, prc, interceptData, buffer ) {
+     * Check the current event's handler for `secured` metadata annotations
+     * on the handler and the current action.
+     *
+     * If a `secured` annotation is found, the permissions list attached
+     * is checked against the current user's permissions.
+     *
+     * If the user is not logged in or does not have one of the required permissions,
+     * the event is overridden to the event specified in module settings.
+     */
+    function preProcess(
+        event,
+        rc,
+        prc,
+        interceptData,
+        buffer
+    ) {
         if ( event.getHTTPMethod() == "OPTIONS" ) {
             return;
         }
@@ -54,24 +60,24 @@ component extends="coldbox.system.Interceptor"{
             return;
         }
 
-        if ( ! handlerBean.isMetadataLoaded() ) {
+        if ( !handlerBean.isMetadataLoaded() ) {
             handlerService.getHandler( handlerBean, event );
         }
         var handlerMetadata = handlerBean.getHandlerMetadata();
 
         return notAuthorizedForHandler( handlerMetadata, event, overrides ) ||
-            notAuthorizedForAction( handlerMetadata, event, overrides );
+        notAuthorizedForAction( handlerMetadata, event, overrides );
     }
 
     /**
-    * Check the current event's handler for `secured` metadata annotations.
-    *
-    * If a `secured` annotation is found, the permissions list attached
-    * is checked against the current user's permissions.
-    *
-    * If the user is not logged in or does not have one of the required permissions,
-    * the event is overridden to the event specified in module settings.
-    */
+     * Check the current event's handler for `secured` metadata annotations.
+     *
+     * If a `secured` annotation is found, the permissions list attached
+     * is checked against the current user's permissions.
+     *
+     * If the user is not logged in or does not have one of the required permissions,
+     * the event is overridden to the event specified in module settings.
+     */
     private function notAuthorizedForHandler( handlerMetadata, event, overrides = {} ) {
         var props = {};
         structAppend( props, variables.properties, true );
@@ -85,7 +91,7 @@ component extends="coldbox.system.Interceptor"{
         param props.authorizationOverrideEvent = "";
         param props.authorizationAjaxOverrideEvent = props.authorizationOverrideEvent;
 
-        if ( ! structKeyExists( handlerMetadata, "secured" ) ) {
+        if ( !structKeyExists( handlerMetadata, "secured" ) ) {
             return false;
         }
 
@@ -93,11 +99,16 @@ component extends="coldbox.system.Interceptor"{
             return false;
         }
 
-        if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+        if ( !invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             // Override the coldbox.cfc global onAuthenticationFailure if it exists in the handler.
             // Per docs, they will override for Ajax requests also.
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
+            var relocateEvent = getOverrideEvent(
+                handlerMetadata,
+                event,
+                props,
+                eventType
+            );
             var overrideAction = props.overrideActions[ eventType ];
 
             // If the override is within the same handler that is being secured,
@@ -122,9 +133,7 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var neededPermissions = handlerMetadata.secured;
-        neededPermissions = isArray( neededPermissions ) ?
-            neededPermissions :
-            listToArray( neededPermissions );
+        neededPermissions = isArray( neededPermissions ) ? neededPermissions : listToArray( neededPermissions );
 
         if ( arrayIsEmpty( neededPermissions ) ) {
             return false;
@@ -133,7 +142,7 @@ component extends="coldbox.system.Interceptor"{
         var loggedInUser = invoke( props.authenticationService, props.methodNames[ "getUser" ] );
 
         for ( var permission in neededPermissions ) {
-            if ( invoke( loggedInUser, props.methodNames[ "hasPermission" ], { permission = permission } ) ) {
+            if ( invoke( loggedInUser, props.methodNames[ "hasPermission" ], { permission: permission } ) ) {
                 return false;
             }
         }
@@ -141,13 +150,18 @@ component extends="coldbox.system.Interceptor"{
         // At this point, we know the user did NOT have any of the required permissions,
         // so we will fire the appropriate authorization failure events
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
+        var relocateEvent = getOverrideEvent(
+            handlerMetadata,
+            event,
+            props,
+            eventType
+        );
         var overrideAction = props.overrideActions[ eventType ];
 
         // If the override is within the same handler that is being secured,
         // we have to override the event instead of relocating. Prevents a circle of death.
         if ( event.getCurrentHandler() == handlerService.getHandlerBean( relocateEvent ).getHandler() ) {
-            overrideAction = 'override';
+            overrideAction = "override";
         }
         switch ( overrideAction ) {
             case "relocate":
@@ -166,14 +180,14 @@ component extends="coldbox.system.Interceptor"{
     }
 
     /**
-    * Check the current event's action for `secured` metadata annotations.
-    *
-    * If a `secured` annotation is found, the permissions list attached
-    * is checked against the current user's permissions.
-    *
-    * If the user is not logged in or does not have one of the required permissions,
-    * the event is overridden to the event specified in module settings.
-    */
+     * Check the current event's action for `secured` metadata annotations.
+     *
+     * If a `secured` annotation is found, the permissions list attached
+     * is checked against the current user's permissions.
+     *
+     * If the user is not logged in or does not have one of the required permissions,
+     * the event is overridden to the event specified in module settings.
+     */
     private function notAuthorizedForAction( handlerMetadata, event, overrides = {} ) {
         var props = {};
         structAppend( props, variables.properties, true );
@@ -187,7 +201,7 @@ component extends="coldbox.system.Interceptor"{
         param props.authorizationOverrideEvent = "";
         param props.authorizationAjaxOverrideEvent = props.authorizationOverrideEvent;
 
-        if ( ! structKeyExists( handlerMetadata, "functions" ) ) {
+        if ( !structKeyExists( handlerMetadata, "functions" ) ) {
             return false;
         }
 
@@ -200,12 +214,17 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var targetActionMetadata = funcsMetadata[ 1 ];
-        if ( ! structKeyExists( targetActionMetadata, "secured" ) || targetActionMetadata.secured == false ) {
+        if ( !structKeyExists( targetActionMetadata, "secured" ) || targetActionMetadata.secured == false ) {
             return false;
         }
-        if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+        if ( !invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
-            var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
+            var relocateEvent = getOverrideEvent(
+                handlerMetadata,
+                event,
+                props,
+                eventType
+            );
             var overrideAction = props.overrideActions[ eventType ];
             switch ( overrideAction ) {
                 case "relocate":
@@ -224,9 +243,7 @@ component extends="coldbox.system.Interceptor"{
         }
 
         var neededPermissions = targetActionMetadata.secured;
-        neededPermissions = isArray( neededPermissions ) ?
-            neededPermissions :
-            listToArray( neededPermissions );
+        neededPermissions = isArray( neededPermissions ) ? neededPermissions : listToArray( neededPermissions );
 
         if ( arrayIsEmpty( neededPermissions ) ) {
             return false;
@@ -235,7 +252,7 @@ component extends="coldbox.system.Interceptor"{
         var loggedInUser = invoke( props.authenticationService, props.methodNames[ "getUser" ] );
 
         for ( var permission in neededPermissions ) {
-            if ( invoke( loggedInUser, props.methodNames[ "hasPermission" ], { permission = permission } ) ) {
+            if ( invoke( loggedInUser, props.methodNames[ "hasPermission" ], { permission: permission } ) ) {
                 return false;
             }
         }
@@ -243,7 +260,12 @@ component extends="coldbox.system.Interceptor"{
         // Override the coldbox.cfc global onAuthorizationFailure if it exists in the handler.
         // Per docs, they will override for Ajax requests also.
         var eventType = event.isAjax() ? "authorizationAjaxOverrideEvent" : "authorizationOverrideEvent";
-        var relocateEvent = getOverrideEvent( handlerMetadata, event, props, eventType );
+        var relocateEvent = getOverrideEvent(
+            handlerMetadata,
+            event,
+            props,
+            eventType
+        );
         var overrideAction = props.overrideActions[ eventType ];
 
         switch ( overrideAction ) {
@@ -264,10 +286,15 @@ component extends="coldbox.system.Interceptor"{
     /**
      * Override the coldbox.cfc global on[eventType]Failure if it exists in the handler.
      */
-    private function getOverrideEvent( handlerMetadata, event, props, eventType ) {
+    private function getOverrideEvent(
+        handlerMetadata,
+        event,
+        props,
+        eventType
+    ) {
         var handlerOverrides = arrayFilter( arguments.handlerMetadata.functions, function( func ) {
             // In case some other override comes up in the future, using switch
-            switch( eventType ) {
+            switch ( eventType ) {
                 case "authenticationOverrideEvent":
                 case "authenticationAjaxOverrideEvent":
                     return func.name == "onAuthenticationFailure";
@@ -278,9 +305,9 @@ component extends="coldbox.system.Interceptor"{
                     return false;
             }
         } );
-        return handlerOverrides.isEmpty() ?
-            arguments.props[ eventType ] :
-            arguments.event.getCurrentHandler() & "." & handlerOverrides[ 1 ].name;
+        return handlerOverrides.isEmpty() ? arguments.props[ eventType ] : arguments.event.getCurrentHandler() & "." & handlerOverrides[
+            1
+        ].name;
     }
 
     private boolean function isInvalidEventHandlerBean( required handlerBean ) {
@@ -295,4 +322,5 @@ component extends="coldbox.system.Interceptor"{
             variables.onInvalidEventHandlerBean.getModule() == arguments.handlerBean.getModule()
         );
     }
+
 }

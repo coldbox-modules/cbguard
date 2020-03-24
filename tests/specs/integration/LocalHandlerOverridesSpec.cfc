@@ -8,11 +8,11 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
             } );
 
             it( "looks for a local onAuthorizationFailure method on the handler for authentication failure events first", function() {
-                authenticationService.login( createUser( { permissions = [] } ) );
+                authenticationService.login( createUser( { permissions: [] } ) );
                 var event = execute( event = "LocalOverrides.secret" );
                 expect( event.getValue( "relocate_event", "" ) ).toBe( "LocalOverrides.onAuthorizationFailure" );
             } );
         } );
-  }
+    }
 
 }

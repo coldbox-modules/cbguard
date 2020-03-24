@@ -168,11 +168,7 @@ component singleton accessors="true" {
      *
      * @returns         cbguard.models.Guard
      */
-    public Guard function authorize(
-        required any permissions,
-        struct additionalArgs = {},
-        any errorMessage
-    ) {
+    public Guard function authorize( required any permissions, struct additionalArgs = {}, any errorMessage ) {
         var context = preflight();
 
         arguments.permissions = arrayWrap( arguments.permissions );
@@ -195,10 +191,7 @@ component singleton accessors="true" {
                 );
             }
 
-            throw(
-                type = "NotAuthorized",
-                message = arguments.errorMessage
-            );
+            throw( type = "NotAuthorized", message = arguments.errorMessage );
         }
 
         return this;
@@ -230,11 +223,8 @@ component singleton accessors="true" {
             props.authenticationService = variables.wirebox.getInstance( dsl = props.authenticationService );
         }
 
-        if ( ! invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
-            throw(
-                type = "NotLoggedIn",
-                message = "No user is logged in to authorize."
-            )
+        if ( !invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+            throw( type = "NotLoggedIn", message = "No user is logged in to authorize." )
         }
 
         return {
@@ -263,20 +253,14 @@ component singleton accessors="true" {
             return invoke(
                 variables.guards[ arguments.permission ],
                 "authorize",
-                {
-                    "user": arguments.context.user,
-                    "additionalArgs": arguments.additionalArgs
-                }
+                { "user": arguments.context.user, "additionalArgs": arguments.additionalArgs }
             );
         }
 
         return invoke(
             arguments.context.user,
             arguments.context.props.methodNames[ "hasPermission" ],
-            {
-                "permission": arguments.permission,
-                "additionalArgs": arguments.additionalArgs
-            }
+            { "permission": arguments.permission, "additionalArgs": arguments.additionalArgs }
         );
     }
 

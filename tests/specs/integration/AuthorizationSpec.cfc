@@ -19,19 +19,19 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
             } );
 
             it( "redirects the user if the component has a secured annotation with a list of permissions and the user does not have any permissions", function() {
-                authenticationService.login( createUser( { permissions = [] } ) );
+                authenticationService.login( createUser( { permissions: [] } ) );
                 var event = execute( event = "PermissionSecured.fooPermissionAction" );
                 expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthorizationFailure" );
             } );
 
             it( "redirects the user if the component has a secured annotation with a list of permissions and the user does not have any of the required permissions", function() {
-                authenticationService.login( createUser( { permissions = [ "bar" ] } ) );
+                authenticationService.login( createUser( { permissions: [ "bar" ] } ) );
                 var event = execute( event = "PermissionSecured.fooPermissionAction" );
                 expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthorizationFailure" );
             } );
 
             it( "does not redirect the user if the component has a secured annotation with a list of permissions and the user has at least one of the required permissions", function() {
-                authenticationService.login( createUser( { permissions = [ "foo" ] } ) );
+                authenticationService.login( createUser( { permissions: [ "foo" ] } ) );
                 var event = execute( event = "PermissionSecured.fooPermissionAction" );
                 expect( event.getValue( "event", "" ) ).toBe( "PermissionSecured.fooPermissionAction" );
             } );
@@ -42,31 +42,31 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
             } );
 
             it( "redirects the user if the action has a secured annotation with a list of permissions and the user does not have any permissions", function() {
-                authenticationService.login( createUser( { permissions = [] } ) );
+                authenticationService.login( createUser( { permissions: [] } ) );
                 var event = execute( event = "PermissionActionSecured.fooPermissionAction" );
                 expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthorizationFailure" );
             } );
 
             it( "redirects the user if the action has a secured annotation with a list of permissions and the user does not have any of the required permissions", function() {
-                authenticationService.login( createUser( { permissions = [ "bar" ] } ) );
+                authenticationService.login( createUser( { permissions: [ "bar" ] } ) );
                 var event = execute( event = "PermissionActionSecured.fooPermissionAction" );
                 expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthorizationFailure" );
             } );
 
             it( "does not redirect the user if the action has a secured annotation with a list of permissions and the user has at least one of the required permissions", function() {
-                authenticationService.login( createUser( { permissions = [ "foo" ] } ) );
+                authenticationService.login( createUser( { permissions: [ "foo" ] } ) );
                 var event = execute( event = "PermissionActionSecured.fooPermissionAction" );
                 expect( event.getValue( "event", "" ) ).toBe( "PermissionActionSecured.fooPermissionAction" );
             } );
 
             it( "redirects the user if the component has a secured annotation with a list of permissions and the user has at least one of the required permissions but the action also has a secured annotation with a list of permissions and the user does not have any of the required permissions", function() {
-                authenticationService.login( createUser( { permissions = [ "one" ] } ) );
+                authenticationService.login( createUser( { permissions: [ "one" ] } ) );
                 var event = execute( event = "DoubleSecured.securedAction" );
                 expect( event.getValue( "relocate_EVENT", "" ) ).toBe( "Main.onAuthorizationFailure" );
             } );
 
             it( "does not redirect the user if the component has a secured annotation with a list of permissions and the user has at least one of the required permissions and the action also has a secured annotation with a list of permissions and the user has at least one of the required permissions", function() {
-                authenticationService.login( createUser( { permissions = [ "one", "two" ] } ) );
+                authenticationService.login( createUser( { permissions: [ "one", "two" ] } ) );
                 var event = execute( event = "DoubleSecured.securedAction" );
                 expect( event.getValue( "event", "" ) ).toBe( "DoubleSecured.securedAction" );
             } );

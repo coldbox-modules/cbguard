@@ -73,17 +73,19 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
                 prepareMock( getRequestContext() ).$( "getHTTPMethod", "OPTIONS" );
                 var event = execute( event = "Secured.index" );
                 expect( event.getValue( "event", "" ) ).toBe( "Secured.index" );
-                expect( event.valueExists( "relocate_EVENT" ) ).toBeFalse( "Event should not be relocated on an OPTIONS request" );
+                expect( event.valueExists( "relocate_EVENT" ) ).toBeFalse(
+                    "Event should not be relocated on an OPTIONS request"
+                );
             } );
         } );
     }
 
     private function createUser( overrides = {} ) {
         var props = {
-            id = 1,
-            email = "johndoe@example.com",
-            username = "johndoe",
-            permissions = []
+            id: 1,
+            email: "johndoe@example.com",
+            username: "johndoe",
+            permissions: []
         };
         structAppend( props, overrides, true );
         return tap( getInstance( "User" ), function( user ) {
