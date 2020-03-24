@@ -4,15 +4,19 @@ jdk:
   - openjdk8
 env:
   matrix:
-    - ENGINE=lucee@5
-    - ENGINE=adobe@2018
-    - ENGINE=adobe@2016
+    - ENGINE=lucee@5 COLDBOX_VERSION=stable
+    - ENGINE=adobe@2018 COLDBOX_VERSION=stable
+    - ENGINE=adobe@2016 COLDBOX_VERSION=stable
+    - ENGINE=lucee@5 COLDBOX_VERSION=be
+    - ENGINE=adobe@2018 COLDBOX_VERSION=be
+    - ENGINE=adobe@2016 COLDBOX_VERSION=be
 before_install:
   - curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add -
   - sudo echo "deb http://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a /etc/apt/sources.list.d/commandbox.list
 install:
   - sudo apt update && sudo apt --assume-yes install commandbox
   - box install
+  - box install coldbox@${COLDBOX_VERSION} --force
 before_script:
   - box server start cfengine=$ENGINE port=8500
 script:
