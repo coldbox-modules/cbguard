@@ -1,3 +1,15 @@
+# v4.1.1
+## 24 Mar 2020 — 19:17:22 UTC
+
+### other
+
++ __\*:__ chore: Add automatic formatting
+ ([9246b00](https://github.com/coldbox-modules/cbguard/commit/9246b00a7d5925e534cf020b0e346ae37ca9fa43))
++ __\*:__ chore: Test on coldbox@be in CI as well
+ ([d09141f](https://github.com/coldbox-modules/cbguard/commit/d09141f62a099ec65e05943eadd416d6b4c8eafc))
++ __\*:__ fix: Don't trigger ColdBox's invalid event looping protection ([41093f7](https://github.com/coldbox-modules/cbguard/commit/41093f77ec316dcc145cc34eb25af972a59dbb27))
+
+
 # v4.1.0
 ## 19 Mar 2020 — 20:49:31 UTC
 
