@@ -1,3 +1,17 @@
+# v4.1.2
+## 12 May 2020 — 16:06:46 UTC
+
+### chore
+
++ __CI:__ Update Travis testing matrix
+ ([5793f0f](https://github.com/coldbox-modules/cbguard/commit/5793f0fc3b1e7a0abba5ec3ede7f814df94180cf))
+
+### other
+
++ __\*:__ feat: Add _securedUrl to flash scope on overrides
+ ([731113b](https://github.com/coldbox-modules/cbguard/commit/731113b2bc890052fc9d295a306292dcefb7c0c7))
+
+
 # v4.1.1
 ## 24 Mar 2020 — 19:17:22 UTC
 
