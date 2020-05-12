@@ -6,7 +6,7 @@
 
 ### Usage
 
-`cbguard` lets us lock down methods to logged in users and users with specific permissions using one annotation — `secured`.  Just sticking the secured annotation on a handler or action is enough to require a user to log in before executing those events.
+`cbguard` lets us lock down methods to logged in users and users with specific permissions using one annotation — `secured`. Just sticking the secured annotation on a handler or action is enough to require a user to log in before executing those events.
 
 Here's an example of how to lock down an entire handler:
 
@@ -36,7 +36,7 @@ component {
 }
 ```
 
-You can further lock down handlers and actions to a list of specific permissions.  If specified, the logged in user must have one of the permissions in the list specified.
+You can further lock down handlers and actions to a list of specific permissions. If specified, the logged in user must have one of the permissions in the list specified.
 
 ```cfc
 component secured="admin" {
@@ -64,7 +64,7 @@ component {
 }
 ```
 
-Individual actions can be secured in the same way.  Above, the `show` action requires the logged in user to have either the `admin` or the `reviews_posts` permission.
+Individual actions can be secured in the same way. Above, the `show` action requires the logged in user to have either the `admin` or the `reviews_posts` permission.
 
 These two approaches can be combined and both handler and actions can be secured together:
 
@@ -118,7 +118,7 @@ public void function authorize( required any permissions, struct additionalArgs 
 In all cases `permissions` can be either a string, a list of strings, or an array of strings.
 
 In the case of `authorize` the `errorMessage` replaces the thrown error message
-in the `NotAuthorized`. exception.  It can also be a closure that takes the following shape:
+in the `NotAuthorized`. exception. It can also be a closure that takes the following shape:
 
 ```cfc
 string function errorMessage( array permissions, any user, struct additionalArgs );
@@ -127,14 +127,14 @@ string function errorMessage( array permissions, any user, struct additionalArgs
 #### Defining Custom Guards
 
 While handling all of your guard clauses inside the `hasPermission` method on your user
-works fine, you may want to define a different way to handle permissions.  You
-can do this by declaring custom guards using the `guard.define` method.  Here's the signature:
+works fine, you may want to define a different way to handle permissions. You
+can do this by declaring custom guards using the `guard.define` method. Here's the signature:
 
 ```cfc
 public Guard function define( required string name, required any callback );
 ```
 
-The `name` will match against a permission name.  If it matches, the guard is
+The `name` will match against a permission name. If it matches, the guard is
 called instead of calling `hasPermission` on the `User` model. (You can always
 call `hasPermission` on the `User` inside your guard callback if you need.)
 
@@ -149,7 +149,7 @@ public boolean function authorize( required any user, struct additionalArgs = {}
 ```
 
 Using this approach, you can define custom guards anywhere in your application:
-`config/ColdBox.cfc`, `ModuleConfig.cfc` of your custom modules, etc.  The
+`config/ColdBox.cfc`, `ModuleConfig.cfc` of your custom modules, etc. The
 `Guard` component is registered as a singleton, so it will keep track of all the
 guards registered, even from different sources.
 
@@ -161,7 +161,7 @@ public Guard function removeDefinition( required string name );
 
 ### Redirects
 
-When a user is denied access to a action, an event of your choosing is executed instead.  There are four keys that can be set in the `moduleSettings` struct that all come with good defaults.
+When a user is denied access to a action, an event of your choosing is executed instead. There are four keys that can be set in the `moduleSettings` struct that all come with good defaults.
 
 1. `authenticationOverrideEvent` (Default: `Main.onAuthenticationFailure`)
 
@@ -173,12 +173,16 @@ This is the event that is executed when the user is logged in and is attempting 
 
 3. `authenticationAjaxOverrideEvent` (Default: `Main.onAuthenticationFailure`)
 
-This is the event that is executed when the user is not logged in and is attempting to execute a secured action via ajax (`event.isAjax()`), whether or not that handler or action has permissions.  By default, this will execute the same action that is configured for `authenticationOverrideEvent`.
+This is the event that is executed when the user is not logged in and is attempting to execute a secured action via ajax (`event.isAjax()`), whether or not that handler or action has permissions. By default, this will execute the same action that is configured for `authenticationOverrideEvent`.
 
 4. `authorizationAjaxOverrideEvent` (Default: same as `authorizationOverrideEvent`)
 
 This is the event that is executed when the user is logged in and is attempting to execute a secured action via ajax (`event.isAjax()`) but does not have the requisite permissions. By default, this will execute the same action that is configured for `authorizationOverrideEvent`.
 
+### \_securedUrl
+
+When an override event is used, the url the user was trying to access is stored in the `flash` scope as `_securedUrl`.
+You can make use of this in your login actions to send the user back where they intended after logging in.
 
 ### Setup
 
@@ -234,12 +238,11 @@ moduleSettings = {
 };
 ```
 
-The default `authenticationService` for `cbguard` is `AuthenticationService@cbauth`.  `cbauth` follows the `AuthenticationServiceInterface` out of the box.
-
+The default `authenticationService` for `cbguard` is `AuthenticationService@cbauth`. `cbauth` follows the `AuthenticationServiceInterface` out of the box.
 
 ### config/ColdBox.cfc Settings
 
-You can change the method names called on the `AuthenticationService` and the returned `User` if you need to.  We highly discourage this use case, as it makes it harder to utilize the `cbguard` conventions across projects.  However, should the need arise, you can modify the method names as follows:
+You can change the method names called on the `AuthenticationService` and the returned `User` if you need to. We highly discourage this use case, as it makes it harder to utilize the `cbguard` conventions across projects. However, should the need arise, you can modify the method names as follows:
 
 ```cfc
 moduleSettings = {
@@ -271,10 +274,9 @@ moduleSettings = {
 `relocate` refers to calling `relocate` on the controller. The user will be redirected to the new page.
 `override` refers to `event.overrideEvent`. This will not redirect but simply change the running event.
 
-
 ### Module Overrides
 
-All of the `cbguard` settings can be overriden inside a module.  This allows modules, such as an API module, to provide
+All of the `cbguard` settings can be overriden inside a module. This allows modules, such as an API module, to provide
 their own authentication services as well as redirect events.
 
 To specify some overrides, create a `cbguard` struct in your desired module's `settings` in that module's `ModuleConfig.cfc`.
@@ -327,7 +329,9 @@ component secured {
 ```
 
 ### Override Order
+
 cbguard will process your authorization and authentication failures in the following order:
+
 1. Inline handler methods (`onAuthenticationFailure` & `onAuthorizationFailure` within your handlers).
 2. cbguard settings in the ModuleConfig of the handler's module. (Overrides in `modules_app/api/ModuleConfig.cfc` when the handler is in the module, i.e. `modules_app/api/handlers/Main.cfc`.)
 3. Overrides in `config/ColdBox.cfc` using `moduleSettings`.

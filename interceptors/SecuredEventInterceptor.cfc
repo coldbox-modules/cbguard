@@ -1,8 +1,9 @@
 component extends="coldbox.system.Interceptor" {
 
-    property name="coldboxVersion" inject="coldbox:fwSetting:version";
-    property name="handlerService" inject="coldbox:handlerService";
+    property name="flash" inject="coldbox:flash";
     property name="moduleService" inject="coldbox:moduleService";
+    property name="handlerService" inject="coldbox:handlerService";
+    property name="coldboxVersion" inject="coldbox:fwSetting:version";
     property name="invalidEventHandler" inject="coldbox:setting:invalidEventHandler";
 
     void function configure() {
@@ -100,6 +101,8 @@ component extends="coldbox.system.Interceptor" {
         }
 
         if ( !invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+            saveSecuredUrl( event );
+
             // Override the coldbox.cfc global onAuthenticationFailure if it exists in the handler.
             // Per docs, they will override for Ajax requests also.
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
@@ -146,6 +149,8 @@ component extends="coldbox.system.Interceptor" {
                 return false;
             }
         }
+
+        saveSecuredUrl( event );
 
         // At this point, we know the user did NOT have any of the required permissions,
         // so we will fire the appropriate authorization failure events
@@ -217,7 +222,10 @@ component extends="coldbox.system.Interceptor" {
         if ( !structKeyExists( targetActionMetadata, "secured" ) || targetActionMetadata.secured == false ) {
             return false;
         }
+
         if ( !invoke( props.authenticationService, props.methodNames[ "isLoggedIn" ] ) ) {
+            saveSecuredUrl( event );
+
             var eventType = event.isAjax() ? "authenticationAjaxOverrideEvent" : "authenticationOverrideEvent";
             var relocateEvent = getOverrideEvent(
                 handlerMetadata,
@@ -256,6 +264,8 @@ component extends="coldbox.system.Interceptor" {
                 return false;
             }
         }
+
+        saveSecuredUrl( event );
 
         // Override the coldbox.cfc global onAuthorizationFailure if it exists in the handler.
         // Per docs, they will override for Ajax requests also.
@@ -321,6 +331,27 @@ component extends="coldbox.system.Interceptor" {
             variables.onInvalidEventHandlerBean.getMethod() == arguments.handlerBean.getMethod() &&
             variables.onInvalidEventHandlerBean.getModule() == arguments.handlerBean.getModule()
         );
+    }
+
+    /**
+     * Flash the incoming secured Url so we can redirect to it or use it in the next request.
+     *
+     * @event The event object
+     */
+    private function saveSecuredUrl( required event ) {
+        var securedUrl = arguments.event.getFullUrl();
+
+        if ( arguments.event.isSES() ) {
+            securedURL = arguments.event.buildLink(
+                to = event.getCurrentRoutedURL(),
+                queryString = CGI.QUERY_STRING,
+                translate = false
+            );
+        }
+
+        // Flash it and place it in RC as well
+        flash.put( "_securedUrl", securedUrl );
+        arguments.event.setValue( "_securedUrl", securedUrl );
     }
 
 }

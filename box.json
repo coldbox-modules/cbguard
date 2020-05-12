@@ -1,35 +1,33 @@
 {
-    "name":"cbguard",
-    "version":"4.1.1",
-    "author":"",
-    "location":"forgeboxStorage",
-    "homepage":"https://github.com/coldbox-modules/cbguard",
-    "documentation":"https://github.com/coldbox-modules/cbguard",
-    "repository":{
-        "type":"git",
-        "URL":"https://github.com/coldbox-modules/cbguard"
+    "name": "cbguard",
+    "version": "4.1.1",
+    "author": "",
+    "location": "forgeboxStorage",
+    "homepage": "https://github.com/coldbox-modules/cbguard",
+    "documentation": "https://github.com/coldbox-modules/cbguard",
+    "repository": {
+        "type": "git",
+        "URL": "https://github.com/coldbox-modules/cbguard"
     },
-    "bugs":"https://github.com/coldbox-modules/cbguard/issues",
-    "slug":"cbguard",
-    "shortDescription":"Annotation driven guards for authentication and authorization in ColdBox apps",
-    "description":"Annotation driven guards for authentication and authorization in ColdBox apps",
-    "type":"modules",
-    "dependencies":{
-        "coldbox":"stable"
+    "bugs": "https://github.com/coldbox-modules/cbguard/issues",
+    "slug": "cbguard",
+    "shortDescription": "Annotation driven guards for authentication and authorization in ColdBox apps",
+    "description": "Annotation driven guards for authentication and authorization in ColdBox apps",
+    "type": "modules",
+    "dependencies": {},
+    "devDependencies": {
+        "coldbox": "^5.6.0",
+        "testbox": "^2.4.0+80"
     },
-    "devDependencies":{
-        "coldbox":"^5.6.0",
-        "testbox":"^2.4.0+80"
+    "installPaths": {
+        "testbox": "testbox/",
+        "coldbox": "tests/resources/app/coldbox/"
     },
-    "installPaths":{
-        "testbox":"testbox/",
-        "coldbox":"tests/resources/app/coldbox/"
+    "scripts": {
+        "format": "cfformat run interceptors/**/*.cfc,interfaces/**/*.cfc,models/**/*.cfc,tests/specs/**/*.cfc --overwrite",
+        "format:check": "cfformat check interceptors/**/*.cfc,interfaces/**/*.cfc,models/**/*.cfc,tests/specs/**/*.cfc"
     },
-    "scripts":{
-        "format":"cfformat run interceptors/**/*.cfc,interfaces/**/*.cfc,models/**/*.cfc,tests/specs/**/*.cfc --overwrite",
-        "format:check":"cfformat check interceptors/**/*.cfc,interfaces/**/*.cfc,models/**/*.cfc,tests/specs/**/*.cfc"
-    },
-    "ignore":[
+    "ignore": [
         "**/.*",
         "test",
         "tests"
