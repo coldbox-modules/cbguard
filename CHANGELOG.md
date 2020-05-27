@@ -1,3 +1,12 @@
+# v4.1.3
+## 27 May 2020 — 05:51:30 UTC
+
+### other
+
++ __\*:__ fix: Updates for coldbox@6
+ ([7755c84](https://github.com/coldbox-modules/cbguard/commit/7755c84fbcd7807e5b5d7b07d42b1025ad4c041c))
+
+
 # v4.1.2
 ## 12 May 2020 — 16:06:46 UTC
 
