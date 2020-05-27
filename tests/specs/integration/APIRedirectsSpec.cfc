@@ -6,9 +6,7 @@ component extends="tests.resources.ModuleIntegrationSpec" appMapping="/app" {
         describe( "API Redirect Specs", function() {
             it( "redirects the user to the normal authentication failure event if no API authentication event is set", function() {
                 var securedEventInterceptor = interceptorService.getInterceptor( "SecuredEventInterceptor" );
-                var authenticationFailureRedirect = securedEventInterceptor.getProperty(
-                    "authenticationOverrideEvent"
-                );
+                var authenticationFailureRedirect = securedEventInterceptor.getProperty( "authenticationOverrideEvent" );
                 prepareMock( getRequestContext() )
                     .$( "getHTTPHeader" )
                     .$args( "X-Requested-With", "" )

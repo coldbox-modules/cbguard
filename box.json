@@ -16,8 +16,8 @@
     "type":"modules",
     "dependencies":{},
     "devDependencies":{
-        "coldbox":"^5.6.0",
-        "testbox":"^2.4.0+80"
+        "coldbox":"stable",
+        "testbox":"^4.0.0+372"
     },
     "installPaths":{
         "testbox":"testbox/",
