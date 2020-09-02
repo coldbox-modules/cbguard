@@ -2,6 +2,8 @@
 
 [![Master Branch Build Status](https://img.shields.io/travis/coldbox-modules/cbguard/master.svg?style=flat-square&label=master)](https://travis-ci.org/coldbox-modules/cbguard)
 
+## This is in maintenance mode.  Current features will be merged with [cbsecurity](https://github.com/coldbox-modules/cbsecurity).
+
 ## Annotation driven guards for authentication and authorization in ColdBox
 
 ### Usage
